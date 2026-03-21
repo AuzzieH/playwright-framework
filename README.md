@@ -2,7 +2,7 @@
 
 [![Playwright Tests](https://github.com/AuzzieH/playwright-framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/AuzzieH/playwright-framework/actions/workflows/playwright.yml)
 
-A professional test automation framework built with **Playwright** and **TypeScript**, targeting [saucedemo.com](https://www.saucedemo.com). Demonstrates the **Page Object Model** design pattern, custom fixtures, data-driven testing, and cross-browser support.
+A test automation framework built with **Playwright** and **TypeScript**, targeting [saucedemo.com](https://www.saucedemo.com). Demonstrates the **Page Object Model** design pattern, custom fixtures, data-driven testing, and cross-browser support.
 
 ## Tech Stack
 
