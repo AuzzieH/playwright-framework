@@ -1,7 +1,7 @@
 {
   "name": "playwright-framework",
   "version": "1.0.0",
-  "description": "Professional Playwright test automation framework targeting saucedemo.com",
+  "description": "Playwright test automation framework using a Feature/Step/Page layered architecture with TypeScript, targeting saucedemo.com",
   "scripts": {
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
@@ -16,7 +16,9 @@
     "automation",
     "testing",
     "typescript",
-    "page-object-model"
+    "page-object-model",
+    "feature-step-page",
+    "test-architecture"
   ],
   "author": "",
   "license": "MIT",

@@ -2,7 +2,7 @@
 
 [![Playwright Tests](https://github.com/AuzzieH/playwright-framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/AuzzieH/playwright-framework/actions/workflows/playwright.yml)
 
-A test automation framework built with **Playwright** and **TypeScript**, targeting [saucedemo.com](https://www.saucedemo.com). Demonstrates the **Page Object Model** design pattern, custom fixtures, data-driven testing, and cross-browser support.
+A test automation framework built with **Playwright** and **TypeScript**, targeting [saucedemo.com](https://www.saucedemo.com). Uses a **Feature / Step / Page** layered architecture with custom fixtures, data-driven testing, and cross-browser support.
 
 ## Tech Stack
 
@@ -14,31 +14,71 @@ A test automation framework built with **Playwright** and **TypeScript**, target
 
 ```
 src/
-├── pages/              # Page Object Model classes
-│   ├── BasePage.ts     # Abstract base with shared methods
-│   ├── LoginPage.ts    # Login page interactions
-│   ├── InventoryPage.ts # Product listing page
-│   ├── CartPage.ts     # Shopping cart
+├── pages/                  # Page objects — selectors & low-level DOM actions
+│   ├── BasePage.ts
+│   ├── LoginPage.ts
+│   ├── InventoryPage.ts
+│   ├── CartPage.ts
 │   ├── CheckoutStepOnePage.ts
 │   ├── CheckoutStepTwoPage.ts
 │   └── CheckoutCompletePage.ts
-├── components/         # Reusable UI components
+├── steps/                  # Step classes — reusable test operations
+│   ├── LoginSteps.ts
+│   ├── InventorySteps.ts
+│   ├── CartSteps.ts
+│   ├── CheckoutSteps.ts
+│   └── NavigationSteps.ts
+├── components/             # Shared UI components
 │   └── HeaderComponent.ts
-├── fixtures/           # Custom Playwright fixtures (DI)
+├── fixtures/               # Playwright fixtures (DI for pages + steps)
 │   └── pageFixtures.ts
-├── data/               # Test data constants
+├── data/                   # Test data constants
 │   ├── users.ts
 │   └── products.ts
-└── utils/              # Helper utilities
+└── utils/                  # Helper utilities
     └── helpers.ts
 
 tests/
-├── login.spec.ts       # Login scenarios
-├── inventory.spec.ts   # Product display & sorting
-├── cart.spec.ts        # Cart management
-├── checkout.spec.ts    # Checkout validation
-└── e2e-purchase.spec.ts # Full purchase flows
+└── features/               # Feature specs organized by domain
+    ├── login.feature.spec.ts
+    ├── inventory.feature.spec.ts
+    ├── cart.feature.spec.ts
+    ├── checkout.feature.spec.ts
+    ├── e2e-purchase.feature.spec.ts
+    ├── navigation.feature.spec.ts
+    └── product-details.feature.spec.ts
 ```
+
+## Architecture
+
+### Feature / Step / Page (3-Layer)
+
+Tests are organized into three layers that separate **what** to test from **how** and **where**:
+
+| Layer          | Location       | Responsibility                                    |
+| -------------- | -------------- | ------------------------------------------------- |
+| **Feature**    | `tests/features/` | High-level test specs — reads like requirements  |
+| **Step**       | `src/steps/`       | Reusable actions & assertions across features    |
+| **Page**       | `src/pages/`       | Selectors and direct DOM interactions            |
+
+This separation means:
+
+- **Selector changes** only touch page files
+- **Workflow changes** only touch step files
+- **New test scenarios** only need feature files using existing steps
+- **Scalability** — adding a new page or feature doesn't require modifying existing tests
+
+### Custom Fixtures
+
+Pages and steps are injected into tests via Playwright's fixture system:
+
+- **Dependency injection** — no manual instantiation in tests
+- **Automatic teardown** — clean state between tests
+- **Composability** — the `authenticatedPage` fixture handles login, keeping tests focused on assertions
+
+### Component Composition
+
+Shared UI elements (e.g., header/burger menu) are extracted into component classes to avoid duplication across page objects.
 
 ## Getting Started
 
@@ -65,47 +105,29 @@ cp .env.example .env
 
 ## Running Tests
 
-| Command               | Description                        |
-| --------------------- | ---------------------------------- |
-| `npm test`            | Run all tests (headless)           |
-| `npm run test:headed` | Run tests in headed browser mode   |
-| `npm run test:ui`     | Launch Playwright UI mode          |
-| `npm run test:chromium` | Run tests in Chromium only       |
-| `npm run test:firefox`  | Run tests in Firefox only        |
-| `npm run test:webkit`   | Run tests in WebKit only         |
-| `npm run report`      | Open the HTML test report          |
-
-## Architecture
-
-### Page Object Model (POM)
-
-Each page of the application is represented by a class that encapsulates its selectors and interactions. This provides:
-
-- **Maintainability** - Selector changes only need updating in one place
-- **Readability** - Tests read like user stories
-- **Reusability** - Page methods are shared across test suites
-
-### Custom Fixtures
-
-Page objects are injected into tests via Playwright's fixture system, providing:
-
-- **Dependency injection** - No manual instantiation in tests
-- **Automatic teardown** - Clean state between tests
-- **Composability** - The `authenticatedPage` fixture handles login once, keeping tests focused on their actual assertions
-
-### Component Composition
-
-Shared UI elements (e.g., the header/burger menu) are extracted into component classes to avoid duplication across page objects.
+| Command                 | Description                        |
+| ----------------------- | ---------------------------------- |
+| `npm test`              | Run all tests (headless)           |
+| `npm run test:headed`   | Run tests in headed browser mode   |
+| `npm run test:ui`       | Launch Playwright UI mode          |
+| `npm run test:chromium` | Run tests in Chromium only         |
+| `npm run test:firefox`  | Run tests in Firefox only          |
+| `npm run test:webkit`   | Run tests in WebKit only           |
+| `npm run report`        | Open the HTML test report          |
 
 ## Test Coverage
 
-| Suite          | Tests | Scenarios                                        |
-| -------------- | ----- | ------------------------------------------------ |
-| Login          | 5     | Valid login, locked user, invalid creds, missing fields |
-| Inventory      | 8     | Product display, sorting (4 options), add/remove cart  |
-| Cart           | 4     | Display items, remove, continue shopping, checkout     |
-| Checkout       | 6     | Field validation, valid info, summary, cancel          |
-| E2E Purchase   | 3     | Single item, multi-item, remove-then-purchase          |
+| Feature          | Tests | Scenarios                                              |
+| ---------------- | ----- | ------------------------------------------------------ |
+| Login            | 5     | Valid login, locked user, invalid creds, missing fields |
+| Inventory        | 5     | Product display, listing, add/remove cart               |
+| Sorting          | 6     | A-Z, Z-A, price low-high, price high-low, default, reset |
+| Cart Management  | 4     | Display items, remove, continue shopping, checkout nav  |
+| Cart Totals      | 6     | Single/multi-item totals, remove updates, empty reset, checkout subtotal |
+| Checkout         | 6     | Field validation, valid info, summary, cancel           |
+| E2E Purchase     | 4     | Single item, multi-item, remove-then-purchase, return   |
+| Navigation       | 6     | Auth guards, logout, session persistence                |
+| Product Details  | 3     | Detail page nav, add from detail, back to inventory     |
 
 ## Reporting
 
