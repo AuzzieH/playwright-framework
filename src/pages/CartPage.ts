@@ -34,4 +34,14 @@ export class CartPage extends BasePage {
   async getItemCount(): Promise<number> {
     return this.cartItems.count();
   }
+
+  async getItemPrices(): Promise<number[]> {
+    const texts = await this.page.locator('.inventory_item_price').allTextContents();
+    return texts.map((t) => parseFloat(t.replace('$', '')));
+  }
+
+  async getPriceTotal(): Promise<number> {
+    const prices = await this.getItemPrices();
+    return parseFloat(prices.reduce((sum, p) => sum + p, 0).toFixed(2));
+  }
 }

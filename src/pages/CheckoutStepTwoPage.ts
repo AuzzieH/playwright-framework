@@ -29,6 +29,11 @@ export class CheckoutStepTwoPage extends BasePage {
     return (await this.page.locator('.summary_total_label').textContent()) ?? '';
   }
 
+  async getSubtotal(): Promise<number> {
+    const text = (await this.subtotalLabel.textContent()) ?? '';
+    return parseFloat(text.replace(/[^0-9.]/g, ''));
+  }
+
   async getItemNames(): Promise<string[]> {
     return this.page.locator('.inventory_item_name').allTextContents();
   }
