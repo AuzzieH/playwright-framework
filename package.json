@@ -1,0 +1,21 @@
+{
+  "name": "playwright-framework",
+  "version": "1.0.0",
+  "description": "Professional Playwright test automation framework targeting saucedemo.com",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:chromium": "npx playwright test --project=chromium",
+    "test:firefox": "npx playwright test --project=firefox",
+    "test:webkit": "npx playwright test --project=webkit",
+    "report": "npx playwright show-report"
+  },
+  "keywords": ["playwright", "automation", "testing", "typescript", "page-object-model"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "dotenv": "^16.4.0"
+  }
+}
