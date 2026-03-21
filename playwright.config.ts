@@ -10,7 +10,7 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['html', { open: 'never' }],
-    ...(process.env.CI ? [['github' as const]] : []),
+    ...(process.env.CI ? [['github'] as const] : []),
   ],
   use: {
     baseURL: process.env.BASE_URL || 'https://www.saucedemo.com',
