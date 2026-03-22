@@ -2,27 +2,27 @@ import { BasePage } from './BasePage.js';
 
 export class CheckoutStepOnePage extends BasePage {
   get firstNameInput() {
-    return this.page.locator('[data-test="firstName"]');
+    return this.page.getByTestId('firstName');
   }
 
   get lastNameInput() {
-    return this.page.locator('[data-test="lastName"]');
+    return this.page.getByTestId('lastName');
   }
 
   get postalCodeInput() {
-    return this.page.locator('[data-test="postalCode"]');
+    return this.page.getByTestId('postalCode');
   }
 
   get continueButton() {
-    return this.page.locator('[data-test="continue"]');
+    return this.page.getByTestId('continue');
   }
 
   get cancelButton() {
-    return this.page.locator('[data-test="cancel"]');
+    return this.page.getByTestId('cancel');
   }
 
   get errorMessage() {
-    return this.page.locator('[data-test="error"]');
+    return this.page.getByTestId('error');
   }
 
   async fillInformation(firstName: string, lastName: string, postalCode: string): Promise<void> {

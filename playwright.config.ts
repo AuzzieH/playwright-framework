@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 import 'dotenv/config';
+import { getBaseUrl, getApiBaseUrl } from './src/config/environment.js';
 
 export default defineConfig({
-  testDir: './tests/features',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -10,31 +10,67 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['html', { open: 'never' }],
-    ...(process.env.CI ? [['github', {}] as const] : []),
+    ['allure-playwright'],
+    ...(process.env.CI
+      ? [
+          ['github', {}] as const,
+          ['junit', { outputFile: 'test-results/junit-results.xml' }] as const,
+        ]
+      : []),
   ],
-  use: {
-    baseURL: process.env.BASE_URL || 'https://www.saucedemo.com',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    trace: 'retain-on-failure',
-    actionTimeout: 10_000,
-  },
   timeout: 30_000,
   expect: {
     timeout: 5_000,
   },
+  use: {
+    testIdAttribute: 'data-test',
+  },
   projects: [
+    // --- UI Tests (SauceDemo) ---
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'ui-chromium',
+      testDir: './tests/features',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: getBaseUrl(),
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
+        trace: 'retain-on-failure',
+        actionTimeout: 10_000,
+      },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: 'ui-firefox',
+      testDir: './tests/features',
+      use: {
+        ...devices['Desktop Firefox'],
+        baseURL: getBaseUrl(),
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
+        trace: 'retain-on-failure',
+        actionTimeout: 10_000,
+      },
     },
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: 'ui-webkit',
+      testDir: './tests/features',
+      use: {
+        ...devices['Desktop Safari'],
+        baseURL: getBaseUrl(),
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
+        trace: 'retain-on-failure',
+        actionTimeout: 10_000,
+      },
+    },
+
+    // --- API Tests (Restful-Booker) ---
+    {
+      name: 'api',
+      testDir: './tests/api',
+      use: {
+        baseURL: getApiBaseUrl(),
+      },
     },
   ],
 });

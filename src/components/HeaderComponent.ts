@@ -4,15 +4,15 @@ export class HeaderComponent {
   constructor(private readonly page: Page) {}
 
   get burgerMenuButton() {
-    return this.page.locator('#react-burger-menu-btn');
+    return this.page.getByRole('button', { name: 'Open Menu' });
   }
 
   get logoutLink() {
-    return this.page.locator('#logout_sidebar_link');
+    return this.page.getByText('Logout');
   }
 
   get resetLink() {
-    return this.page.locator('#reset_sidebar_link');
+    return this.page.getByText('Reset App State');
   }
 
   get cartLink() {

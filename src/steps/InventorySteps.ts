@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { InventoryPage } from '../pages/InventoryPage.js';
+import type { InventoryPage } from '../pages/InventoryPage.js';
 
 export class InventorySteps {
   constructor(private readonly inventoryPage: InventoryPage) {}

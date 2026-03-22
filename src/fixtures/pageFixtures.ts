@@ -5,13 +5,13 @@ import { CartPage } from '../pages/CartPage.js';
 import { CheckoutStepOnePage } from '../pages/CheckoutStepOnePage.js';
 import { CheckoutStepTwoPage } from '../pages/CheckoutStepTwoPage.js';
 import { CheckoutCompletePage } from '../pages/CheckoutCompletePage.js';
+import { ProductDetailsPage } from '../pages/ProductDetailsPage.js';
 import { HeaderComponent } from '../components/HeaderComponent.js';
 import { LoginSteps } from '../steps/LoginSteps.js';
 import { InventorySteps } from '../steps/InventorySteps.js';
 import { CartSteps } from '../steps/CartSteps.js';
 import { CheckoutSteps } from '../steps/CheckoutSteps.js';
 import { NavigationSteps } from '../steps/NavigationSteps.js';
-import { USERS } from '../data/users.js';
 
 interface PageFixtures {
   // Pages (low-level selectors & actions)
@@ -21,6 +21,7 @@ interface PageFixtures {
   checkoutStepOnePage: CheckoutStepOnePage;
   checkoutStepTwoPage: CheckoutStepTwoPage;
   checkoutCompletePage: CheckoutCompletePage;
+  productDetailsPage: ProductDetailsPage;
   headerComponent: HeaderComponent;
 
   // Steps (reusable test operations)
@@ -60,6 +61,10 @@ export const test = base.extend<PageFixtures>({
     await use(new CheckoutCompletePage(page));
   },
 
+  productDetailsPage: async ({ page }, use) => {
+    await use(new ProductDetailsPage(page));
+  },
+
   headerComponent: async ({ page }, use) => {
     await use(new HeaderComponent(page));
   },
@@ -77,7 +82,10 @@ export const test = base.extend<PageFixtures>({
     await use(new CartSteps(cartPage));
   },
 
-  checkoutSteps: async ({ checkoutStepOnePage, checkoutStepTwoPage, checkoutCompletePage }, use) => {
+  checkoutSteps: async (
+    { checkoutStepOnePage, checkoutStepTwoPage, checkoutCompletePage },
+    use,
+  ) => {
     await use(new CheckoutSteps(checkoutStepOnePage, checkoutStepTwoPage, checkoutCompletePage));
   },
 

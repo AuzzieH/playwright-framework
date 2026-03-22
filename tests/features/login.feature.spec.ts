@@ -6,7 +6,7 @@ test.describe('Feature: Login', () => {
     await loginSteps.goToLoginPage();
   });
 
-  test('Successful login with standard user', async ({ loginSteps, navigationSteps }) => {
+  test('Successful login with standard user @smoke', async ({ loginSteps, navigationSteps }) => {
     await loginSteps.loginAs('STANDARD');
     await navigationSteps.verifyUrl(/inventory/);
   });

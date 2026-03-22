@@ -7,11 +7,11 @@ export class CartPage extends BasePage {
   }
 
   get checkoutButton() {
-    return this.page.locator('[data-test="checkout"]');
+    return this.page.getByTestId('checkout');
   }
 
   get continueShoppingButton() {
-    return this.page.locator('[data-test="continue-shopping"]');
+    return this.page.getByTestId('continue-shopping');
   }
 
   async getItemNames(): Promise<string[]> {
@@ -20,7 +20,7 @@ export class CartPage extends BasePage {
 
   async removeItem(productName: string): Promise<void> {
     const slug = slugify(productName);
-    await this.page.locator(`[data-test="remove-${slug}"]`).click();
+    await this.page.getByTestId(`remove-${slug}`).click();
   }
 
   async proceedToCheckout(): Promise<void> {

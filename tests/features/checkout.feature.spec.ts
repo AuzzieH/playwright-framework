@@ -22,7 +22,10 @@ test.describe('Feature: Checkout Validation', () => {
     await checkoutSteps.verifyShippingError('Postal Code is required');
   });
 
-  test('Valid info proceeds to order summary', async ({ checkoutSteps, navigationSteps }) => {
+  test('Valid info proceeds to order summary @smoke', async ({
+    checkoutSteps,
+    navigationSteps,
+  }) => {
     await checkoutSteps.fillAndSubmitShippingInfo('John', 'Doe', '12345');
     await navigationSteps.verifyUrl(/checkout-step-two/);
   });

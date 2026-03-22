@@ -3,7 +3,7 @@ import { test, expect } from '../../src/fixtures/pageFixtures.js';
 test.describe('Feature: End-to-End Purchase Flow', () => {
   test.beforeEach(async ({ authenticatedPage }) => {});
 
-  test('Complete a single item purchase', async ({
+  test('Complete a single item purchase @smoke', async ({
     inventorySteps,
     cartSteps,
     checkoutSteps,
@@ -16,11 +16,7 @@ test.describe('Feature: End-to-End Purchase Flow', () => {
     await checkoutSteps.verifyOrderComplete();
   });
 
-  test('Complete a multi-item purchase', async ({
-    inventorySteps,
-    cartSteps,
-    checkoutSteps,
-  }) => {
+  test('Complete a multi-item purchase', async ({ inventorySteps, cartSteps, checkoutSteps }) => {
     await inventorySteps.addItemToCart('Sauce Labs Backpack');
     await inventorySteps.addItemToCart('Sauce Labs Bike Light');
     await inventorySteps.addItemToCart('Sauce Labs Bolt T-Shirt');

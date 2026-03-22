@@ -1,9 +1,7 @@
 node_modules/
+dist/
 test-results/
 playwright-report/
-blob-report/
 allure-results/
 allure-report/
-.env
-dist/
-*.log
+package-lock.json

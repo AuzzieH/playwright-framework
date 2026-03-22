@@ -2,7 +2,7 @@ import { BasePage } from './BasePage.js';
 
 export class CheckoutCompletePage extends BasePage {
   get completeHeader() {
-    return this.page.locator('.complete-header');
+    return this.page.getByRole('heading', { name: 'Thank you for your order!' });
   }
 
   get completeText() {
@@ -10,7 +10,7 @@ export class CheckoutCompletePage extends BasePage {
   }
 
   get backHomeButton() {
-    return this.page.locator('[data-test="back-to-products"]');
+    return this.page.getByTestId('back-to-products');
   }
 
   async getConfirmationHeader(): Promise<string> {

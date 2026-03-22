@@ -2,51 +2,105 @@
 
 [![Playwright Tests](https://github.com/AuzzieH/playwright-framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/AuzzieH/playwright-framework/actions/workflows/playwright.yml)
 
-A test automation framework built with **Playwright** and **TypeScript**, targeting [saucedemo.com](https://www.saucedemo.com). Uses a **Feature / Step / Page** layered architecture with custom fixtures, data-driven testing, and cross-browser support.
+A professional test automation framework built with **Playwright** and **TypeScript** covering both **UI** and **API** testing. Features a clean **Feature / Step / Page** layered architecture, environment-based configuration, test tagging, Allure reporting, and full CI/CD integration.
+
+|         | Target                                                                   | Tests                      |
+| ------- | ------------------------------------------------------------------------ | -------------------------- |
+| **UI**  | [SauceDemo](https://www.saucedemo.com) e-commerce site                   | 45 tests across 9 features |
+| **API** | [Restful-Booker](https://restful-booker.herokuapp.com) hotel booking API | 15 tests across 5 suites   |
+
+### Playwright HTML Report
+
+<p align="center">
+  <img src="docs/screenshots/playwright-report.png" alt="Playwright HTML Report" width="800" />
+</p>
+
+---
 
 ## Tech Stack
 
-- [Playwright](https://playwright.dev/) - Modern end-to-end testing framework
-- [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
-- [GitHub Actions](https://github.com/features/actions) - CI/CD pipeline
+| Tool                                                             | Purpose                            |
+| ---------------------------------------------------------------- | ---------------------------------- |
+| [Playwright](https://playwright.dev/)                            | End-to-end testing framework       |
+| [TypeScript](https://www.typescriptlang.org/)                    | Type-safe JavaScript               |
+| [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) | Code quality & formatting          |
+| [Allure](https://allurereport.org/)                              | Test reporting with history trends |
+| [GitHub Actions](https://github.com/features/actions)            | CI/CD pipeline                     |
+
+## Quick Start
+
+```bash
+git clone https://github.com/AuzzieH/playwright-framework.git
+cd playwright-framework
+npm install
+npx playwright install --with-deps
+cp .env.example .env
+
+npm test                  # Run all 60 tests
+npm run test:smoke        # Run 11 critical path tests
+npm run test:ui:headed    # Watch UI tests in browser
+```
+
+---
 
 ## Project Structure
 
 ```
 src/
-├── pages/                  # Page objects — selectors & low-level DOM actions
+├── pages/                      # Page objects — selectors & DOM actions
 │   ├── BasePage.ts
 │   ├── LoginPage.ts
 │   ├── InventoryPage.ts
 │   ├── CartPage.ts
+│   ├── ProductDetailsPage.ts
 │   ├── CheckoutStepOnePage.ts
 │   ├── CheckoutStepTwoPage.ts
 │   └── CheckoutCompletePage.ts
-├── steps/                  # Step classes — reusable test operations
+├── steps/                      # UI step classes — reusable test operations
 │   ├── LoginSteps.ts
 │   ├── InventorySteps.ts
 │   ├── CartSteps.ts
 │   ├── CheckoutSteps.ts
 │   └── NavigationSteps.ts
-├── components/             # Shared UI components
+├── components/                 # Shared UI components
 │   └── HeaderComponent.ts
-├── fixtures/               # Playwright fixtures (DI for pages + steps)
+├── fixtures/                   # UI fixtures (DI for pages + steps)
 │   └── pageFixtures.ts
-├── data/                   # Test data constants
+├── config/                     # Environment configuration (dev/staging/prod)
+│   └── environment.ts
+├── api/
+│   ├── clients/                # API client classes — HTTP request wrappers
+│   │   ├── AuthClient.ts
+│   │   └── BookingClient.ts
+│   ├── steps/                  # API step classes — reusable request + assertion logic
+│   │   ├── AuthSteps.ts
+│   │   └── BookingSteps.ts
+│   ├── data/                   # API types and test data factories
+│   │   ├── types.ts
+│   │   └── bookingData.ts
+│   └── fixtures/               # API fixtures (DI for clients + steps)
+│       └── apiFixtures.ts
+├── data/                       # UI test data
 │   ├── users.ts
 │   └── products.ts
-└── utils/                  # Helper utilities
+└── utils/                      # Helper utilities
     └── helpers.ts
 
 tests/
-└── features/               # Feature specs organized by domain
-    ├── login.feature.spec.ts
-    ├── inventory.feature.spec.ts
-    ├── cart.feature.spec.ts
-    ├── checkout.feature.spec.ts
-    ├── e2e-purchase.feature.spec.ts
-    ├── navigation.feature.spec.ts
-    └── product-details.feature.spec.ts
+├── features/                   # UI feature specs
+│   ├── login.feature.spec.ts
+│   ├── inventory.feature.spec.ts
+│   ├── cart.feature.spec.ts
+│   ├── checkout.feature.spec.ts
+│   ├── e2e-purchase.feature.spec.ts
+│   ├── navigation.feature.spec.ts
+│   └── product-details.feature.spec.ts
+└── api/                        # API feature specs
+    ├── health.api.spec.ts
+    ├── auth.api.spec.ts
+    ├── booking-crud.api.spec.ts
+    ├── booking-search.api.spec.ts
+    └── booking-negative.api.spec.ts
 ```
 
 ## Architecture
@@ -55,98 +109,127 @@ tests/
 
 Tests are organized into three layers that separate **what** to test from **how** and **where**:
 
-| Layer          | Location       | Responsibility                                    |
-| -------------- | -------------- | ------------------------------------------------- |
-| **Feature**    | `tests/features/` | High-level test specs — reads like requirements  |
-| **Step**       | `src/steps/`       | Reusable actions & assertions across features    |
-| **Page**       | `src/pages/`       | Selectors and direct DOM interactions            |
-
-This separation means:
+| Layer           | UI Location       | API Location       | Responsibility                    |
+| --------------- | ----------------- | ------------------ | --------------------------------- |
+| **Feature**     | `tests/features/` | `tests/api/`       | High-level test specs             |
+| **Step**        | `src/steps/`      | `src/api/steps/`   | Reusable actions & assertions     |
+| **Page/Client** | `src/pages/`      | `src/api/clients/` | Selectors / HTTP request wrappers |
 
 - **Selector changes** only touch page files
+- **API contract changes** only touch client files
 - **Workflow changes** only touch step files
 - **New test scenarios** only need feature files using existing steps
-- **Scalability** — adding a new page or feature doesn't require modifying existing tests
+
+### Playwright-Recommended Locators
+
+Page objects use Playwright's preferred locator strategies:
+
+- `getByTestId()` for elements with `data-test` attributes
+- `getByRole()` for semantic element selection (buttons, headings)
+- `getByText()` for text-based selection
+- CSS selectors only as a fallback for elements without better alternatives
 
 ### Custom Fixtures
 
-Pages and steps are injected into tests via Playwright's fixture system:
+Pages, steps, and API clients are injected via Playwright's fixture system:
 
 - **Dependency injection** — no manual instantiation in tests
 - **Automatic teardown** — clean state between tests
-- **Composability** — the `authenticatedPage` fixture handles login, keeping tests focused on assertions
+- **Composability** — `authenticatedPage` handles UI login; `authToken` handles API auth
 
-### Component Composition
+### Test Tagging
 
-Shared UI elements (e.g., header/burger menu) are extracted into component classes to avoid duplication across page objects.
-
-## Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) 18+
-
-### Installation
+Tests are tagged with `@smoke` for critical happy-path scenarios:
 
 ```bash
-git clone https://github.com/AuzzieH/playwright-framework.git
-cd playwright-framework
-npm install
-npx playwright install --with-deps
+npm run test:smoke        # 11 critical path tests
+npm run test:regression   # Everything except smoke
 ```
 
-### Configuration
+### Environment Configuration
 
-Copy the environment template and adjust if needed:
+URL resolution supports multiple environments via `src/config/environment.ts`:
 
 ```bash
-cp .env.example .env
+ENV=staging npm test    # Run against staging
+ENV=prod npm test       # Run against production (default)
 ```
 
 ## Running Tests
 
-| Command                 | Description                        |
-| ----------------------- | ---------------------------------- |
-| `npm test`              | Run all tests (headless)           |
-| `npm run test:headed`   | Run tests in headed browser mode   |
-| `npm run test:ui`       | Launch Playwright UI mode          |
-| `npm run test:chromium` | Run tests in Chromium only         |
-| `npm run test:firefox`  | Run tests in Firefox only          |
-| `npm run test:webkit`   | Run tests in WebKit only           |
-| `npm run report`        | Open the HTML test report          |
+| Command                   | Description                         |
+| ------------------------- | ----------------------------------- |
+| `npm test`                | Run all tests (UI + API)            |
+| `npm run test:ui`         | Run UI tests (Chromium, headless)   |
+| `npm run test:ui:headed`  | Run UI tests in headed browser mode |
+| `npm run test:ui:firefox` | Run UI tests in Firefox             |
+| `npm run test:ui:webkit`  | Run UI tests in WebKit              |
+| `npm run test:api`        | Run API tests only                  |
+| `npm run test:smoke`      | Run smoke tests only (11 tests)     |
+| `npm run test:regression` | Run non-smoke tests                 |
+| `npm run test:debug`      | Launch Playwright UI mode           |
+| `npm run report`          | Open the HTML test report           |
+| `npm run report:allure`   | Generate and open Allure report     |
+
+## Code Quality
+
+| Command                | Description               |
+| ---------------------- | ------------------------- |
+| `npm run lint`         | Run ESLint                |
+| `npm run lint:fix`     | Auto-fix lint issues      |
+| `npm run format`       | Format code with Prettier |
+| `npm run format:check` | Check formatting          |
 
 ## Test Coverage
 
-| Feature          | Tests | Scenarios                                              |
-| ---------------- | ----- | ------------------------------------------------------ |
-| Login            | 5     | Valid login, locked user, invalid creds, missing fields |
-| Inventory        | 5     | Product display, listing, add/remove cart               |
-| Sorting          | 6     | A-Z, Z-A, price low-high, price high-low, default, reset |
-| Cart Management  | 4     | Display items, remove, continue shopping, checkout nav  |
-| Cart Totals      | 6     | Single/multi-item totals, remove updates, empty reset, checkout subtotal |
-| Checkout         | 6     | Field validation, valid info, summary, cancel           |
-| E2E Purchase     | 4     | Single item, multi-item, remove-then-purchase, return   |
-| Navigation       | 6     | Auth guards, logout, session persistence                |
-| Product Details  | 3     | Detail page nav, add from detail, back to inventory     |
+### UI Tests (45 tests)
+
+| Feature         | Tests | Scenarios                                                                |
+| --------------- | ----- | ------------------------------------------------------------------------ |
+| Login           | 5     | Valid login, locked user, invalid creds, missing fields                  |
+| Inventory       | 5     | Product display, listing, add/remove cart                                |
+| Sorting         | 6     | A-Z, Z-A, price low-high, price high-low, default, reset                 |
+| Cart Management | 4     | Display items, remove, continue shopping, checkout nav                   |
+| Cart Totals     | 6     | Single/multi-item totals, remove updates, empty reset, checkout subtotal |
+| Checkout        | 6     | Field validation, valid info, summary, cancel                            |
+| E2E Purchase    | 4     | Single item, multi-item, remove-then-purchase, return                    |
+| Navigation      | 6     | Auth guards, logout, session persistence                                 |
+| Product Details | 3     | Detail page nav, add from detail, back to inventory                      |
+
+### API Tests (15 tests)
+
+| Feature        | Tests | Scenarios                                                  |
+| -------------- | ----- | ---------------------------------------------------------- |
+| Health Check   | 1     | Ping endpoint availability                                 |
+| Authentication | 2     | Valid token generation, invalid credentials                |
+| Booking CRUD   | 5     | Create, read, update (PUT), partial update (PATCH), delete |
+| Booking Search | 3     | List all IDs, filter by name, field preservation           |
+| Negative Cases | 4     | 404 not found, 403 unauthorized (PUT, PATCH, DELETE)       |
 
 ## Reporting
 
-Tests generate an HTML report with:
+### HTML Report (Playwright)
 
-- Screenshots captured on failure
-- Video recordings retained on failure
-- Trace files for debugging with Playwright Trace Viewer
-
-View the report after a test run:
+Built-in report with screenshots, videos, and trace files on failure:
 
 ```bash
 npm run report
 ```
 
+### Allure Report
+
+Rich reporting with history trends and detailed test breakdowns (requires Java):
+
+```bash
+npm run report:allure
+```
+
 ## CI/CD
 
-The GitHub Actions workflow runs on every push to `main` and on pull requests. It:
+The GitHub Actions workflow runs on every push to `main` and on pull requests:
 
-1. Installs dependencies and browsers
-2. Runs the full test suite
-3. Uploads the HTML report as a build artifact
+1. **Lint job** — ESLint + Prettier check
+2. **Test job** — full test suite with JUnit results in the Actions summary
+3. **Artifacts** — HTML report + Allure results uploaded for download
+
+Manual runs support suite selection: `all`, `ui`, `api`, or `smoke`.

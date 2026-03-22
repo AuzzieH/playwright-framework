@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
-import { CheckoutStepOnePage } from '../pages/CheckoutStepOnePage.js';
-import { CheckoutStepTwoPage } from '../pages/CheckoutStepTwoPage.js';
-import { CheckoutCompletePage } from '../pages/CheckoutCompletePage.js';
+import type { CheckoutStepOnePage } from '../pages/CheckoutStepOnePage.js';
+import type { CheckoutStepTwoPage } from '../pages/CheckoutStepTwoPage.js';
+import type { CheckoutCompletePage } from '../pages/CheckoutCompletePage.js';
 
 export class CheckoutSteps {
   constructor(
@@ -18,7 +18,11 @@ export class CheckoutSteps {
     await this.stepOnePage.submit();
   }
 
-  async fillAndSubmitShippingInfo(firstName: string, lastName: string, postalCode: string): Promise<void> {
+  async fillAndSubmitShippingInfo(
+    firstName: string,
+    lastName: string,
+    postalCode: string,
+  ): Promise<void> {
     await this.fillShippingInfo(firstName, lastName, postalCode);
     await this.submitShippingInfo();
   }

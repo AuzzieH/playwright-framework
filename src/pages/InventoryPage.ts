@@ -7,7 +7,7 @@ export class InventoryPage extends BasePage {
   }
 
   get sortDropdown() {
-    return this.page.locator('[data-test="product-sort-container"]');
+    return this.page.getByTestId('product-sort-container');
   }
 
   get cartBadge() {
@@ -19,17 +19,17 @@ export class InventoryPage extends BasePage {
   }
 
   get pageTitle() {
-    return this.page.locator('.title');
+    return this.page.getByText('Products', { exact: true });
   }
 
   async addToCartByName(productName: string): Promise<void> {
     const slug = slugify(productName);
-    await this.page.locator(`[data-test="add-to-cart-${slug}"]`).click();
+    await this.page.getByTestId(`add-to-cart-${slug}`).click();
   }
 
   async removeFromCartByName(productName: string): Promise<void> {
     const slug = slugify(productName);
-    await this.page.locator(`[data-test="remove-${slug}"]`).click();
+    await this.page.getByTestId(`remove-${slug}`).click();
   }
 
   async getCartCount(): Promise<number> {

@@ -14,19 +14,19 @@ export class CheckoutStepTwoPage extends BasePage {
   }
 
   get totalLabel() {
-    return this.page.locator('.summary_info_label.summary_total_label');
+    return this.page.locator('.summary_total_label');
   }
 
   get finishButton() {
-    return this.page.locator('[data-test="finish"]');
+    return this.page.getByTestId('finish');
   }
 
   get cancelButton() {
-    return this.page.locator('[data-test="cancel"]');
+    return this.page.getByTestId('cancel');
   }
 
   async getTotal(): Promise<string> {
-    return (await this.page.locator('.summary_total_label').textContent()) ?? '';
+    return (await this.totalLabel.textContent()) ?? '';
   }
 
   async getSubtotal(): Promise<number> {

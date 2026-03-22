@@ -4,7 +4,7 @@ import { PRODUCTS } from '../../src/data/products.js';
 test.describe('Feature: Inventory', () => {
   test.beforeEach(async ({ authenticatedPage }) => {});
 
-  test('Displays all 6 products', async ({ inventorySteps }) => {
+  test('Displays all 6 products @smoke', async ({ inventorySteps }) => {
     await inventorySteps.verifyProductCount(6);
   });
 
@@ -17,7 +17,7 @@ test.describe('Feature: Inventory', () => {
     await inventorySteps.verifyProductPricesDisplayed(PRODUCTS.map((p) => p.price));
   });
 
-  test('Add product to cart updates badge count', async ({ inventorySteps }) => {
+  test('Add product to cart updates badge count @smoke', async ({ inventorySteps }) => {
     await inventorySteps.addItemToCart('Sauce Labs Backpack');
     await inventorySteps.verifyCartBadgeCount(1);
   });
@@ -33,7 +33,7 @@ test.describe('Feature: Inventory', () => {
 test.describe('Feature: Inventory Sorting', () => {
   test.beforeEach(async ({ authenticatedPage }) => {});
 
-  test('Sort by name A to Z', async ({ inventorySteps }) => {
+  test('Sort by name A to Z @smoke', async ({ inventorySteps }) => {
     await inventorySteps.sortByNameAscending();
     await inventorySteps.verifySortedByNameAscending();
   });
@@ -57,10 +57,7 @@ test.describe('Feature: Inventory Sorting', () => {
     await inventorySteps.verifySortedByNameAscending();
   });
 
-  test('Sort resets to default after navigating away', async ({
-    inventorySteps,
-    cartSteps,
-  }) => {
+  test('Sort resets to default after navigating away', async ({ inventorySteps, cartSteps }) => {
     await inventorySteps.sortByPriceHighToLow();
     await inventorySteps.navigateToCart();
     await cartSteps.continueShopping();

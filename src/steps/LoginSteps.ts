@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage.js';
-import { USERS, type UserCredentials } from '../data/users.js';
+import type { LoginPage } from '../pages/LoginPage.js';
+import { USERS } from '../data/users.js';
 
 export class LoginSteps {
   constructor(private readonly loginPage: LoginPage) {}

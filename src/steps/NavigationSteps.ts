@@ -1,5 +1,5 @@
 import { expect, type Page } from '@playwright/test';
-import { HeaderComponent } from '../components/HeaderComponent.js';
+import type { HeaderComponent } from '../components/HeaderComponent.js';
 
 export class NavigationSteps {
   constructor(
@@ -20,13 +20,13 @@ export class NavigationSteps {
   }
 
   async verifyAuthError(path: string): Promise<void> {
-    await expect(this.page.locator('[data-test="error"]')).toContainText(
+    await expect(this.page.getByTestId('error')).toContainText(
       `You can only access '${path}' when you are logged in`,
     );
   }
 
   async verifyErrorVisible(): Promise<void> {
-    await expect(this.page.locator('[data-test="error"]')).toBeVisible();
+    await expect(this.page.getByTestId('error')).toBeVisible();
   }
 
   async logout(): Promise<void> {
@@ -38,6 +38,6 @@ export class NavigationSteps {
   }
 
   async verifyLoginPageVisible(): Promise<void> {
-    await expect(this.page.locator('[data-test="login-button"]')).toBeVisible();
+    await expect(this.page.getByTestId('login-button')).toBeVisible();
   }
 }

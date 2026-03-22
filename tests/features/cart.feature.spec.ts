@@ -8,7 +8,7 @@ const BOLT_SHIRT = PRODUCTS[2]; // $15.99
 test.describe('Feature: Cart Management', () => {
   test.beforeEach(async ({ authenticatedPage }) => {});
 
-  test('Added items appear in the cart', async ({ inventorySteps, cartSteps }) => {
+  test('Added items appear in the cart @smoke', async ({ inventorySteps, cartSteps }) => {
     await inventorySteps.addItemToCart(BACKPACK.name);
     await inventorySteps.addItemToCart(BIKE_LIGHT.name);
     await inventorySteps.navigateToCart();
@@ -56,7 +56,10 @@ test.describe('Feature: Cart Price Totals', () => {
     await cartSteps.verifyCartTotal(BACKPACK.price);
   });
 
-  test('Two items total equals sum of both prices', async ({ inventorySteps, cartSteps }) => {
+  test('Two items total equals sum of both prices @smoke', async ({
+    inventorySteps,
+    cartSteps,
+  }) => {
     await inventorySteps.addItemToCart(BACKPACK.name);
     await inventorySteps.addItemToCart(BIKE_LIGHT.name);
     await inventorySteps.navigateToCart();
@@ -65,10 +68,7 @@ test.describe('Feature: Cart Price Totals', () => {
     await cartSteps.verifyCartTotal(expectedTotal);
   });
 
-  test('Removing one item updates the total correctly', async ({
-    inventorySteps,
-    cartSteps,
-  }) => {
+  test('Removing one item updates the total correctly', async ({ inventorySteps, cartSteps }) => {
     await inventorySteps.addItemToCart(BACKPACK.name);
     await inventorySteps.addItemToCart(BIKE_LIGHT.name);
     await inventorySteps.navigateToCart();
